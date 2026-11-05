@@ -1,0 +1,99 @@
+// BOTA — Ethiopia's Event Marketplace
+// Prisma schema (SQLite). Roles, organizer verification, events, tiers and orders.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Platform account. `role` is one of: user | organizer | admin
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+
+  organizer Organizer?
+  orders    Order[]
+}
+
+/// Organizer application / profile. Created when a user applies to sell tickets.
+/// `status` is one of: pending | approved | rejected
+model Organizer {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName     String
+  instagram        String?
+  tiktok           String?
+  idDocument       String?
+  phone            String?
+  payoutMethod     String?
+  payoutAccount    String?
+  status           String   @default("pending")
+  commissionAgreed Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  events Event[]
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  category    String
+  date        String
+  venue       String
+  city        String
+  image       String   @default("nightlife")
+  description String
+  published   Boolean  @default(true)
+  organizerId String
+  organizer   Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  tiers  TicketTier[]
+  orders Order[]
+}
+
+model TicketTier {
+  id       String @id @default(cuid())
+  eventId  String
+  event    Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name     String
+  price    Int
+  capacity Int
+  sold     Int    @default(0)
+
+  orders Order[]
+}
+
+/// `status` is one of: awaiting_review | paid | rejected
+model Order {
+  id         String    @id @default(cuid())
+  code       String?   @unique
+  eventId    String
+  event      Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tierId     String
+  tier       TicketTier @relation(fields: [tierId], references: [id])
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id])
+  buyerName  String
+  buyerEmail String
+  buyerPhone String
+  qty        Int
+  total      Int
+  status     String    @default("awaiting_review")
+  reference  String?
+  method     String?
+  used       Boolean   @default(false)
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+}

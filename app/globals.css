@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { scrollbar-width: thin; scrollbar-color: #2A251F #0F0D0B; }
+
+body {
+  background: #0A0908;
+  color: #F5F1EA;
+  font-family: var(--font-space), system-ui, sans-serif;
+}
+
+/* hero glow */
+.hero-bg {
+  background: radial-gradient(ellipse 700px 400px at 50% 0%, rgba(255,107,69,0.09) 0%, rgba(20,18,15,0) 70%),
+              radial-gradient(ellipse 900px 500px at 0% 10%, rgba(232,176,75,0.04) 0%, transparent 60%),
+              #0A0908;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, black 40%, transparent 85%);
+  pointer-events: none;
+}
+
+/* card hover */
+.event-card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(255,107,69,0.12), 0 2px 8px rgba(0,0,0,0.4);
+}
+.event-card .card-img {
+  transition: transform 300ms ease;
+}
+.event-card:hover .card-img {
+  transform: scale(1.05);
+}
+
+/* button hover */
+.btn-coral {
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+.btn-coral:hover {
+  transform: translateY(-1px);
+  background: #E85E3A;
+  box-shadow: 0 4px 16px rgba(255,107,69,0.35);
+}
+.btn-coral:active { transform: translateY(0); }
+
+/* nav underline */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 0; height: 1.5px;
+  background: #FF6B45;
+  transition: width 180ms ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+/* pill hover */
+.pill {
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.pill:hover { border-color: rgba(255,107,69,0.5); }
+.pill-active { background: #E8B04B; color: #0A0908; border-color: #E8B04B; font-weight: 700; }
+.pill-inactive { background: rgba(255,255,255,0.04); color: #9B948A; border: 1px solid rgba(255,255,255,0.07); }
+.pill-inactive:hover { color: #F5F1EA; }
+
+/* scrollbar hide */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* custom glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* star rating hover */
+.star-rating:hover {
+  transform: scale(1.1);
+  transition: transform 0.1s ease;
+}
+
+/* mobile nav active state */
+.mobile-nav-item.active {
+  color: #E8B04B;
+}
+.mobile-nav-item.active svg {
+  fill: rgba(232, 176, 75, 0.1);
+}
